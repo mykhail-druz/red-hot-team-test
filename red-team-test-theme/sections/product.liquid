@@ -1,0 +1,1372 @@
+<style>
+  .product-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  .product-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: start;
+  }
+
+  /* === КАСТОМНА ГАЛЕРЕЯ === */
+  .gallery-section {
+    position: relative;
+  }
+
+  .custom-gallery {
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 15px;
+    position: relative;
+    background: #f8f9fa;
+  }
+
+  .gallery-container {
+    display: flex;
+    transition: transform 0.3s ease;
+    height: 500px;
+    width: 100%;
+  }
+
+  .gallery-slide {
+    flex: 0 0 100%;
+    min-width: 100%;
+    position: relative;
+  }
+
+  .gallery-slide img {
+    width: 100%;
+    height: 500px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .gallery-nav-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.9);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    color: #333;
+    font-weight: bold;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    border: none;
+    pointer-events: auto;
+    user-select: none;
+  }
+
+  .gallery-nav-button:hover {
+    background: rgba(255,255,255,1);
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  .gallery-nav-button:active {
+    transform: translateY(-50%) scale(0.95);
+  }
+
+  .gallery-prev {
+    left: 15px;
+  }
+
+  .gallery-next {
+    right: 15px;
+  }
+
+  .gallery-pagination {
+    position: absolute;
+    bottom: 15px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    z-index: 100;
+  }
+
+  .gallery-pagination-bullet {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.7);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+  }
+
+  .gallery-pagination-bullet.active {
+    background: #fff;
+    transform: scale(1.3);
+  }
+
+  /* === МІНІАТЮРИ З НОРМАЛЬНИМ РОЗМІРОМ === */
+  .gallery-thumbs {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    overflow-x: auto;
+    padding: 8px 0;
+    /* Приховуємо скролбар */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE та Edge */
+    /* Достатня ширина для показу всіх мініатюр */
+    max-width: 100%;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  .gallery-thumbs::-webkit-scrollbar {
+    display: none; /* Chrome, Safari та Opera */
+  }
+
+  .gallery-thumb {
+    flex: 0 0 auto;
+    width: 80px;
+    height: 80px;
+    opacity: 0.5;
+    cursor: pointer;
+    border-radius: 6px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+  }
+
+  .gallery-thumb.active {
+    opacity: 1;
+    border: 3px solid #007aff;
+    transform: scale(1.05);
+  }
+
+  .gallery-thumb:hover {
+    opacity: 0.8;
+    transform: scale(1.02);
+  }
+
+  .gallery-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @media (max-width: 768px) {
+    .gallery-thumbs {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+    }
+
+    .gallery-thumb {
+      width: 70px;
+      height: 70px;
+      flex-shrink: 0;
+    }
+  }
+
+  /* === ДЕТАЛІ ПРОДУКТУ === */
+  .product-info {
+    padding: 0;
+  }
+
+  .product-title {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #1a1a1a;
+    line-height: 1.2;
+  }
+
+  .price-section {
+    margin-bottom: 25px;
+  }
+
+  .current-price {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1a1a1a;
+  }
+
+  .compare-price {
+    font-size: 24px;
+    color: #999;
+    text-decoration: line-through;
+    margin-left: 15px;
+  }
+
+  .stock-status {
+    margin-bottom: 25px;
+    font-size: 16px;
+  }
+
+  .in-stock {
+    color: #16a34a;
+    font-weight: 600;
+  }
+
+  .out-of-stock {
+    color: #dc2626;
+    font-weight: 600;
+  }
+
+  /* === СЕЛЕКТОРИ ВАРІАНТІВ === */
+  .variants-section {
+    margin-bottom: 30px;
+  }
+
+  .variant-group {
+    margin-bottom: 20px;
+  }
+
+  .variant-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #1a1a1a;
+    font-size: 16px;
+  }
+
+  .variant-select {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #e5e5e5;
+    border-radius: 8px;
+    font-size: 16px;
+    background: #fff;
+    transition: border-color 0.3s ease;
+  }
+
+  .variant-select:focus {
+    outline: none;
+    border-color: #007aff;
+  }
+
+  /* === СЕЛЕКТОРИ КОЛЬОРІВ === */
+  .color-hearts-label {
+    font-size: 14px;
+    color: #555;
+    margin-top: 8px;
+    margin-bottom: 5px;
+  }
+
+  .color-hearts-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 5px;
+  }
+
+  .color-heart {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin: 2px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .color-heart:hover {
+    transform: scale(1.1);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+  }
+
+  .color-heart.active {
+    transform: scale(1.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border: 2px solid #333;
+  }
+
+  /* Спеціальний стиль для білого кольору */
+  .color-heart[style*="background-color: #f5f5f5"],
+  .color-heart[style*="background-color: white"] {
+    border: 1px solid rgba(0, 0, 0, 0.3);
+  }
+
+  .color-heart[style*="background-color: #f5f5f5"].active,
+  .color-heart[style*="background-color: white"].active {
+    border: 2px solid #333;
+  }
+
+  /* Додаткові стилі для кращого відображення на мобільних пристроях */
+  @media (max-width: 768px) {
+    .color-hearts-container {
+      justify-content: center;
+    }
+
+    .color-heart {
+      width: 25px;
+      height: 25px;
+    }
+  }
+
+  /* === ДИНАМІЧНИЙ DROPDOWN === */
+  .product-dropdown {
+    margin-bottom: 25px;
+    border: 2px solid #e5e5e5;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .dropdown-header {
+    padding: 16px 20px;
+    background: #f8f9fa;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    transition: background 0.3s ease;
+  }
+
+  .dropdown-header:hover {
+    background: #e9ecef;
+  }
+
+  .dropdown-icon {
+    font-size: 20px;
+    transition: transform 0.3s ease;
+  }
+
+  .product-dropdown.open .dropdown-icon {
+    transform: rotate(180deg);
+  }
+
+  .dropdown-content {
+    display: none;
+    padding: 20px;
+    background: #fff;
+  }
+
+  .product-dropdown.open .dropdown-content {
+    display: block;
+  }
+
+  .dropdown-items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .dropdown-items li {
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+    color: #555;
+  }
+
+  .dropdown-items li:last-child {
+    border-bottom: none;
+  }
+
+  /* Стиль для єдиного тексту */
+  .dropdown-text {
+    color: #555;
+    line-height: 1.6;
+  }
+
+  /* === ОПИС ПРОДУКТУ === */
+  .product-description {
+    margin-bottom: 30px;
+    line-height: 1.6;
+    color: #555;
+    font-size: 16px;
+  }
+
+  /* === КНОПКА ДОДАТИ В КОШИК === */
+  .add-to-cart-btn {
+    width: 100%;
+    padding: 18px 24px;
+    background: #007aff;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .add-to-cart-btn:hover {
+    background: #0056b3;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,122,255,0.3);
+  }
+
+  .add-to-cart-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  /* === АДАПТИВНІСТЬ === */
+  @media (max-width: 1024px) {
+    .product-layout {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+
+    .gallery-container {
+      height: 400px;
+    }
+
+    .gallery-slide img {
+      height: 400px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .product-container {
+      padding: 15px;
+    }
+
+    .product-title {
+      font-size: 28px;
+    }
+
+    .current-price {
+      font-size: 26px;
+    }
+
+    .gallery-container {
+      height: 350px;
+    }
+
+    .gallery-slide img {
+      height: 350px;
+    }
+  }
+</style>
+
+<div class="product-container">
+  <div class="product-layout">
+
+    <!-- === КАСТОМНА ГАЛЕРЕЯ === -->
+    <div class="gallery-section">
+      <!-- Основна галерея -->
+      <div class="custom-gallery">
+        <div class="gallery-container" id="galleryContainer">
+          {% for image in product.images %}
+            {% assign image_alt = image.alt | downcase %}
+            {% assign image_color = 'all' %}
+
+            {% comment %} Витягуємо колір з ALT тексту зображення {% endcomment %}
+            {% if image_alt contains 'color:' or image_alt contains 'колір:' or image_alt contains 'colour:' %}
+              {% if image_alt contains 'color:' %}
+                {% assign color_parts = image_alt | split: 'color:' %}
+              {% elsif image_alt contains 'колір:' %}
+                {% assign color_parts = image_alt | split: 'колір:' %}
+              {% elsif image_alt contains 'colour:' %}
+                {% assign color_parts = image_alt | split: 'colour:' %}
+              {% endif %}
+
+              {% if color_parts.size > 1 %}
+                {% assign image_color = color_parts[1] | strip | downcase %}
+                {% if image_color contains ' ' %}
+                  {% assign image_color = image_color | split: ' ' | first %}
+                {% endif %}
+              {% endif %}
+            {% endif %}
+
+            {% comment %} Перевіряємо, чи колір міститься в ALT тексті без префіксу {% endcomment %}
+            {% if image_color == 'all' %}
+              {% for option in product.options_with_values %}
+                {% if option.name contains 'Color' or option.name contains 'Colour' or option.name contains 'Колір' %}
+                  {% for value in option.values %}
+                    {% assign option_value = value | downcase %}
+                    {% if image_alt contains option_value %}
+                      {% assign image_color = option_value %}
+                      {% break %}
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+
+            <div class="gallery-slide" data-color="{{ image_color }}" data-index="{{ forloop.index0 }}">
+              <img src="{{ image | img_url: '800x800' }}" alt="{{ image.alt | escape }}">
+            </div>
+          {% endfor %}
+        </div>
+
+        <!-- Навігаційні кнопки -->
+        <button class="gallery-nav-button gallery-prev" id="galleryPrev">&lt;</button>
+        <button class="gallery-nav-button gallery-next" id="galleryNext">&gt;</button>
+
+        <!-- Пагінація -->
+        <div class="gallery-pagination" id="galleryPagination">
+          {% for image in product.images %}
+            <div class="gallery-pagination-bullet" data-index="{{ forloop.index0 }}"></div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Мініатюри -->
+      {% if product.images.size > 1 %}
+        <div class="gallery-thumbs" id="galleryThumbs">
+          {% for image in product.images %}
+            {% assign image_alt = image.alt | downcase %}
+            {% assign image_color = 'all' %}
+
+            {% comment %} Витягуємо колір з ALT тексту зображення {% endcomment %}
+            {% if image_alt contains 'color:' or image_alt contains 'колір:' or image_alt contains 'colour:' %}
+              {% if image_alt contains 'color:' %}
+                {% assign color_parts = image_alt | split: 'color:' %}
+              {% elsif image_alt contains 'колір:' %}
+                {% assign color_parts = image_alt | split: 'колір:' %}
+              {% elsif image_alt contains 'colour:' %}
+                {% assign color_parts = image_alt | split: 'colour:' %}
+              {% endif %}
+
+              {% if color_parts.size > 1 %}
+                {% assign image_color = color_parts[1] | strip | downcase %}
+                {% if image_color contains ' ' %}
+                  {% assign image_color = image_color | split: ' ' | first %}
+                {% endif %}
+              {% endif %}
+            {% endif %}
+
+            {% comment %} Перевіряємо, чи колір міститься в ALT тексті без префіксу {% endcomment %}
+            {% if image_color == 'all' %}
+              {% for option in product.options_with_values %}
+                {% if option.name contains 'Color' or option.name contains 'Colour' or option.name contains 'Колір' %}
+                  {% for value in option.values %}
+                    {% assign option_value = value | downcase %}
+                    {% if image_alt contains option_value %}
+                      {% assign image_color = option_value %}
+                      {% break %}
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+
+            <div class="gallery-thumb" data-color="{{ image_color }}" data-index="{{ forloop.index0 }}">
+              <img src="{{ image | img_url: '200x200' }}" alt="{{ image.alt | escape }}">
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </div>
+
+
+    <!-- === ІНФОРМАЦІЯ ПРО ПРОДУКТ === -->
+    <div class="product-info">
+      <!-- 1. Заголовок -->
+      <h1 class="product-title">{{ product.title }}</h1>
+
+      <!-- 2. Ціна -->
+      <div class="price-section">
+        <span class="current-price" id="currentPrice">
+          {{ product.selected_or_first_available_variant.price | money_with_currency }}
+        </span>
+        {% if product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price %}
+          <span class="compare-price" id="comparePrice">
+            {{ product.selected_or_first_available_variant.compare_at_price | money_with_currency }}
+          </span>
+        {% endif %}
+      </div>
+
+      <!-- Форма продукту -->
+      {% form 'product', product, class: 'product-form' %}
+        {% assign current_variant = product.selected_or_first_available_variant %}
+
+        <!-- 3. Вибір кольору та інших варіантів -->
+        {% unless product.has_only_default_variant %}
+          <div class="variants-section">
+            {% for option in product.options_with_values %}
+              <div class="variant-group">
+                <label class="variant-label">
+                  {% case option.name %}
+                    {% when 'Color' %}Колір
+                    {% when 'Size' %}Розмір
+                    {% when 'Material' %}Матеріал
+                    {% else %}{{ option.name }}
+                  {% endcase %}
+                </label>
+                {% if option.name contains 'Color' or option.name contains 'Colour' or option.name contains 'Колір' %}
+                  <!-- Прихований селектор кольору для збереження функціональності -->
+                  <select class="variant-select color-select"
+                          name="options[{{ option.name }}]"
+                          data-option-index="{{ forloop.index0 }}"
+                          data-color-selector="true"
+                          style="display: none;">
+                    {% for value in option.values %}
+                      <option value="{{ value | escape }}" {% if option.selected_value == value %}selected{% endif %}>
+                        {{ value }}
+                      </option>
+                    {% endfor %}
+                  </select>
+
+                  <!-- Селектори кольорів -->
+                  <div class="color-hearts-label">Оберіть колір:</div>
+                  <div class="color-hearts-container" data-color-hearts-container>
+                    {% for value in option.values %}
+                      {% assign color_value = value | escape | downcase %}
+                      {% assign css_color = color_value %}
+
+                      {% comment %}Маппінг кольорів для кращого відображення{% endcomment %}
+                      {% case color_value %}
+                        {% when 'red' or 'червоний' %}
+                          {% assign css_color = '#e53935' %}
+                        {% when 'blue' or 'синій' %}
+                          {% assign css_color = '#1e88e5' %}
+                        {% when 'green' or 'зелений' %}
+                          {% assign css_color = '#43a047' %}
+                        {% when 'yellow' or 'жовтий' %}
+                          {% assign css_color = '#fdd835' %}
+                        {% when 'orange' or 'помаранчевий' %}
+                          {% assign css_color = '#fb8c00' %}
+                        {% when 'purple' or 'фіолетовий' %}
+                          {% assign css_color = '#8e24aa' %}
+                        {% when 'pink' or 'рожевий' %}
+                          {% assign css_color = '#d81b60' %}
+                        {% when 'brown' or 'коричневий' %}
+                          {% assign css_color = '#6d4c41' %}
+                        {% when 'grey' or 'gray' or 'сірий' %}
+                          {% assign css_color = '#757575' %}
+                        {% when 'black' or 'чорний' %}
+                          {% assign css_color = '#212121' %}
+                        {% when 'white' or 'білий' %}
+                          {% assign css_color = '#f5f5f5' %}
+                        {% when 'gold' or 'золотий' %}
+                          {% assign css_color = '#ffd700' %}
+                        {% when 'silver' or 'срібний' %}
+                          {% assign css_color = '#c0c0c0' %}
+                      {% endcase %}
+
+                      <div class="color-heart{% if option.selected_value == value %} active{% endif %}"
+                           data-color-value="{{ value | escape }}"
+                           style="background-color: {{ css_color }};"
+                           title="{{ value | escape }}">
+                      </div>
+                    {% endfor %}
+                  </div>
+                {% else %}
+                  <select class="variant-select"
+                          name="options[{{ option.name }}]"
+                          data-option-index="{{ forloop.index0 }}">
+                    {% for value in option.values %}
+                      <option value="{{ value | escape }}" {% if option.selected_value == value %}selected{% endif %}>
+                        {{ value }}
+                      </option>
+                    {% endfor %}
+                  </select>
+                {% endif %}
+              </div>
+            {% endfor %}
+          </div>
+        {% endunless %}
+
+        <select name="id" class="variant-id-selector" style="display: none;">
+          {% for variant in product.variants %}
+            <option value="{{ variant.id }}"
+                    {% if variant == current_variant %}selected{% endif %}
+                    data-available="{{ variant.available }}"
+                    data-price="{{ variant.price }}"
+                    data-compare-price="{{ variant.compare_at_price }}"
+              {% for option in variant.options %}data-option{{ forloop.index }}="{{ option | escape }}"{% endfor %}>
+              {{ variant.title }}
+            </option>
+          {% endfor %}
+        </select>
+
+        <!-- Статус наявності -->
+        <div class="stock-status">
+          <span id="stockStatus" class="{% if product.selected_or_first_available_variant.available %}in-stock{% else %}out-of-stock{% endif %}">
+            {% if product.selected_or_first_available_variant.available %}✓ В наявності{% else %}✗ Немає в наявності{% endif %}
+          </span>
+        </div>
+
+        <!-- 4. Кнопка "Додати в кошик" -->
+        <button type="submit" name="add" class="add-to-cart-btn" id="addToCartBtn">
+          Додати в кошик
+        </button>
+      {% endform %}
+
+      <!-- 5. Опис продукту -->
+      <div class="product-description">
+        {{ product.description }}
+      </div>
+
+      <!-- 6. Динамічні дропдауни з метаполів продукту та налаштувань секції -->
+      {% for i in (1..3) %}
+        {% assign dropdown_title_key = 'dropdown' | append: i | append: '_title' %}
+        {% assign dropdown_content_key = 'dropdown' | append: i | append: '_content' %}
+
+        {% comment %} Перевіряємо спочатку метаполя продукту {% endcomment %}
+        {% assign metafield_title = product.metafields.custom[dropdown_title_key] %}
+        {% assign metafield_content = product.metafields.custom[dropdown_content_key] %}
+
+        {% comment %} Якщо метаполя немає, використовуємо налаштування секції {% endcomment %}
+        {% assign dropdown_title = metafield_title | default: section.settings[dropdown_title_key] %}
+        {% assign dropdown_content = metafield_content | default: section.settings[dropdown_content_key] %}
+
+        {% if dropdown_title != blank and dropdown_content != blank %}
+          <div class="product-dropdown" onclick="toggleProductDropdown(this)">
+            <div class="dropdown-header">
+              <span>{{ dropdown_title }}</span>
+              <span class="dropdown-icon">▼</span>
+            </div>
+            <div class="dropdown-content">
+              <div class="dropdown-text">{{ dropdown_content }}</div>
+            </div>
+          </div>
+        {% endif %}
+      {% endfor %}
+
+      <!-- Підтримка старих метаполів для зворотної сумісності -->
+      {% if product.metafields.custom.dropdown_title != blank and product.metafields.custom.dropdown_content != blank %}
+        <div class="product-dropdown" onclick="toggleProductDropdown(this)">
+          <div class="dropdown-header">
+            <span>{{ product.metafields.custom.dropdown_title }}</span>
+            <span class="dropdown-icon">▼</span>
+          </div>
+          <div class="dropdown-content">
+            <div class="dropdown-text">{{ product.metafields.custom.dropdown_content }}</div>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('Ініціалізація галереї...');
+
+    // Отримати налаштування з section.settings
+    const settings = {
+      desktop: {
+        slidesPerView: {{ section.settings.desktop_slides_per_view | default: 4 }},
+        spaceBetween: {{ section.settings.desktop_space_between | default: 20 }},
+        pagination: {{ section.settings.desktop_pagination | default: true }},
+        navigation: {{ section.settings.desktop_navigation | default: true }}
+      },
+      tablet: {
+        slidesPerView: {{ section.settings.tablet_slides_per_view | default: 3 }},
+        spaceBetween: {{ section.settings.tablet_space_between | default: 15 }},
+        pagination: {{ section.settings.tablet_pagination | default: true }},
+        navigation: {{ section.settings.tablet_navigation | default: true }}
+      },
+      mobile: {
+        slidesPerView: {{ section.settings.mobile_slides_per_view | default: 1 }},
+        spaceBetween: {{ section.settings.mobile_space_between | default: 10 }},
+        pagination: {{ section.settings.mobile_pagination | default: true }},
+        navigation: {{ section.settings.mobile_navigation | default: false }}
+      }
+    };
+
+    // === ІНІЦІАЛІЗАЦІЯ СЕЛЕКТОРІВ КОЛЬОРІВ ===
+    const colorHeartsContainer = document.querySelector('[data-color-hearts-container]');
+    if (colorHeartsContainer) {
+      const colorHearts = colorHeartsContainer.querySelectorAll('.color-heart');
+      const colorSelect = document.querySelector('.color-select');
+
+      // Додаємо обробники подій для селекторів
+      colorHearts.forEach(heart => {
+        heart.addEventListener('click', function() {
+          const colorValue = this.getAttribute('data-color-value');
+
+          // Оновлюємо активний клас
+          colorHearts.forEach(h => h.classList.remove('active'));
+          this.classList.add('active');
+
+          // Оновлюємо прихований селектор
+          if (colorSelect) {
+            colorSelect.value = colorValue;
+
+            // Створюємо подію change для запуску фільтрації
+            const changeEvent = new Event('change', { bubbles: true });
+            colorSelect.dispatchEvent(changeEvent);
+          }
+        });
+      });
+    }
+
+    // === ІНІЦІАЛІЗАЦІЯ КАСТОМНОЇ ГАЛЕРЕЇ ===
+    const galleryContainer = document.getElementById('galleryContainer');
+
+    // Перевіряємо, чи існує галерея на сторінці
+    if (!galleryContainer) {
+      console.error('Контейнер галереї не знайдено!');
+      return;
+    }
+
+    const gallerySlides = document.querySelectorAll('.gallery-slide');
+    if (gallerySlides.length === 0) {
+      console.error('Слайди галереї не знайдено!');
+      return;
+    }
+
+    const galleryPrev = document.getElementById('galleryPrev');
+    const galleryNext = document.getElementById('galleryNext');
+    const galleryPagination = document.getElementById('galleryPagination');
+    const galleryPaginationBullets = document.querySelectorAll('.gallery-pagination-bullet');
+    const galleryThumbs = document.getElementById('galleryThumbs');
+    const galleryThumbItems = document.querySelectorAll('.gallery-thumb');
+
+    console.log(`Галерея ініціалізована з ${gallerySlides.length} слайдами`);
+
+    let currentSlide = 0;
+    let visibleSlides = [];
+    let isAnimating = false;
+
+    // Функція для визначення першого доступного кольору варіанту
+    function getInitialColor() {
+      // Спочатку перевіряємо, чи є вибраний варіант з кольором
+      const selectedVariant = document.querySelector('.variant-id-selector option[selected]');
+      if (selectedVariant) {
+        const option1 = selectedVariant.getAttribute('data-option1');
+        if (option1) {
+          console.log(`Знайдено вибраний варіант з кольором: ${option1}`);
+          return option1.toLowerCase();
+        }
+      }
+
+      // Якщо немає вибраного варіанту, беремо перший доступний колір
+      const colorSelect = document.querySelector('.color-select');
+      if (colorSelect && colorSelect.options.length > 0) {
+        const firstColor = colorSelect.options[0].value;
+        console.log(`Використовуємо перший доступний колір: ${firstColor}`);
+        return firstColor.toLowerCase();
+      }
+
+      console.log('Колір не знайдено, показуємо всі зображення');
+      return 'all';
+    }
+
+    // Функція для фільтрації зображень за кольором
+    function filterImagesByColor(selectedColor) {
+      console.log('Фільтрація зображень за кольором:', selectedColor);
+
+      visibleSlides = [];
+
+      // Визначаємо які слайди повинні бути видимими
+      gallerySlides.forEach((slide, index) => {
+        const slideColor = slide.getAttribute('data-color') || 'all';
+        const shouldShow = selectedColor === 'all' || slideColor === 'all' || slideColor === selectedColor.toLowerCase();
+
+        if (shouldShow) {
+          visibleSlides.push(index);
+        }
+      });
+
+      // Перебудовуємо контейнер галереї з тільки видимими слайдами
+      rebuildGallery();
+
+      // Фільтруємо мініатюри
+      galleryThumbItems.forEach((thumb, index) => {
+        const thumbColor = thumb.getAttribute('data-color') || 'all';
+        const shouldShow = selectedColor === 'all' || thumbColor === 'all' || thumbColor === selectedColor.toLowerCase();
+        thumb.style.display = shouldShow ? 'block' : 'none';
+      });
+
+      // Фільтруємо точки пагінації
+      galleryPaginationBullets.forEach((bullet, index) => {
+        const slide = gallerySlides[index];
+        const slideColor = slide.getAttribute('data-color') || 'all';
+        const shouldShow = selectedColor === 'all' || slideColor === 'all' || slideColor === selectedColor.toLowerCase();
+        bullet.style.display = shouldShow ? 'block' : 'none';
+      });
+
+      // Переходимо до першого видимого слайду
+      if (visibleSlides.length > 0) {
+        slideTo(0, true);
+      }
+
+      console.log(`Знайдено ${visibleSlides.length} видимих слайдів:`, visibleSlides);
+    }
+
+    // Функція для перебудови галереї з видимими слайдами
+    function rebuildGallery() {
+      // Очищуємо контейнер
+      galleryContainer.innerHTML = '';
+
+      // Додаємо тільки видимі слайди
+      visibleSlides.forEach((originalIndex, newIndex) => {
+        const originalSlide = gallerySlides[originalIndex];
+        const newSlide = originalSlide.cloneNode(true);
+        newSlide.setAttribute('data-visible-index', newIndex);
+        galleryContainer.appendChild(newSlide);
+      });
+
+      // ВИПРАВЛЕННЯ: Правильно встановлюємо ширину та скидуємо трансформацію
+      galleryContainer.style.width = '100%';
+      galleryContainer.style.transform = 'translateX(0%)';
+      currentSlide = 0;
+
+      console.log(`Галерею перебудовано з ${visibleSlides.length} видимими слайдами`);
+    }
+
+    // Функція для переходу до слайду
+    function slideTo(index, isVisibleIndex = false) {
+      if (isAnimating || visibleSlides.length === 0) return;
+
+      if (isVisibleIndex) {
+        // Індекс у видимих слайдах
+        if (index < 0) index = visibleSlides.length - 1;
+        if (index >= visibleSlides.length) index = 0;
+        currentSlide = index;
+      } else {
+        // Абсолютний індекс слайду
+        const visibleIndex = visibleSlides.indexOf(index);
+        if (visibleIndex === -1) return; // Слайд не видимий
+        currentSlide = visibleIndex;
+      }
+
+      isAnimating = true;
+
+      const translateX = -currentSlide * 100;
+      galleryContainer.style.transform = `translateX(${translateX}%)`;
+
+      console.log(`Перехід до слайду ${currentSlide}, translateX: ${translateX}%`);
+
+      // Оновлюємо активні елементи
+      updateActiveElements();
+
+      // Розблоковуємо анімацію через час переходу
+      setTimeout(() => {
+        isAnimating = false;
+      }, 300);
+    }
+
+    // Функція оновлення активних елементів
+    function updateActiveElements() {
+      const activeOriginalIndex = visibleSlides[currentSlide];
+
+      // Оновлюємо слайди в контейнері
+      const currentSlides = galleryContainer.querySelectorAll('.gallery-slide');
+      currentSlides.forEach((slide, index) => {
+        slide.classList.toggle('active', index === currentSlide);
+      });
+
+      // Оновлюємо пагінацію (тільки видимі елементи)
+      let visibleBulletIndex = 0;
+      galleryPaginationBullets.forEach((bullet, index) => {
+        if (bullet.style.display !== 'none') {
+          bullet.classList.toggle('active', visibleBulletIndex === currentSlide);
+          visibleBulletIndex++;
+        } else {
+          bullet.classList.remove('active');
+        }
+      });
+
+      // Оновлюємо мініатюри (тільки видимі елементи)
+      let visibleThumbIndex = 0;
+      galleryThumbItems.forEach((thumb, index) => {
+        if (thumb.style.display !== 'none') {
+          thumb.classList.toggle('active', visibleThumbIndex === currentSlide);
+          visibleThumbIndex++;
+        } else {
+          thumb.classList.remove('active');
+        }
+      });
+    }
+
+    // Обробники кнопок навігації
+    if (galleryPrev) {
+      galleryPrev.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('Клік по кнопці "Назад"');
+        slideTo(currentSlide - 1, true);
+      });
+      console.log('Обробник кнопки "Назад" додано');
+    }
+
+    if (galleryNext) {
+      galleryNext.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('Клік по кнопці "Вперед"');
+        slideTo(currentSlide + 1, true);
+      });
+      console.log('Обробник кнопки "Вперед" додано');
+    }
+
+    // Обробники пагінації
+    if (galleryPaginationBullets && galleryPaginationBullets.length > 0) {
+      galleryPaginationBullets.forEach((bullet, index) => {
+        bullet.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          // Знаходимо індекс серед видимих елементів
+          let visibleIndex = 0;
+          let found = false;
+
+          for (let i = 0; i <= index; i++) {
+            if (galleryPaginationBullets[i].style.display !== 'none') {
+              if (i === index) {
+                found = true;
+                break;
+              }
+              visibleIndex++;
+            }
+          }
+
+          if (found) {
+            console.log(`Клік по пагінації, видимий слайд ${visibleIndex}`);
+            slideTo(visibleIndex, true);
+          }
+        });
+      });
+      console.log(`Обробники пагінації додано для ${galleryPaginationBullets.length} елементів`);
+    }
+
+    // Обробники мініатюр
+    if (galleryThumbItems && galleryThumbItems.length > 0) {
+      galleryThumbItems.forEach((thumb, index) => {
+        thumb.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          // Знаходимо індекс серед видимих елементів
+          let visibleIndex = 0;
+          let found = false;
+
+          for (let i = 0; i <= index; i++) {
+            if (galleryThumbItems[i].style.display !== 'none') {
+              if (i === index) {
+                found = true;
+                break;
+              }
+              visibleIndex++;
+            }
+          }
+
+          if (found) {
+            console.log(`Клік по мініатюрі, видимий слайд ${visibleIndex}`);
+            slideTo(visibleIndex, true);
+          }
+        });
+      });
+      console.log(`Обробники мініатюр додано для ${galleryThumbItems.length} елементів`);
+    }
+
+    // Touch події для свайпу
+    let touchStartX = 0;
+    let touchEndX = 0;
+    let touchStartY = 0;
+    let touchEndY = 0;
+    let isTouching = false;
+
+    galleryContainer.addEventListener('touchstart', function(e) {
+      isTouching = true;
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      console.log(`Початок дотику: X=${touchStartX}, Y=${touchStartY}`);
+    }, { passive: true });
+
+    galleryContainer.addEventListener('touchmove', function(e) {
+      if (!isTouching) return;
+
+      const currentX = e.touches[0].clientX;
+      const currentY = e.touches[0].clientY;
+      const deltaX = Math.abs(touchStartX - currentX);
+      const deltaY = Math.abs(touchStartY - currentY);
+
+      // Якщо горизонтальний рух більший за вертикальний, запобігаємо скролу
+      if (deltaX > deltaY) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+
+    galleryContainer.addEventListener('touchend', function(e) {
+      if (!isTouching) return;
+
+      isTouching = false;
+      touchEndX = e.changedTouches[0].clientX;
+      touchEndY = e.changedTouches[0].clientY;
+
+      const deltaX = touchStartX - touchEndX;
+      const deltaY = Math.abs(touchStartY - touchEndY);
+
+      console.log(`Кінець дотику: deltaX=${deltaX}, deltaY=${deltaY}`);
+
+      // Перевіряємо, що це горизонтальний свайп (а не вертикальний скрол)
+      if (Math.abs(deltaX) > 50 && deltaY < 100) {
+        if (deltaX > 0) {
+          console.log('Свайп вліво - наступний слайд');
+          slideTo(currentSlide + 1, true);
+        } else {
+          console.log('Свайп вправо - попередній слайд');
+          slideTo(currentSlide - 1, true);
+        }
+      }
+    }, { passive: true });
+
+    // Обробник зміни кольору
+    const colorSelects = document.querySelectorAll('.color-select, .variant-select[name*="Color"], .variant-select[name*="Colour"], .variant-select[name*="Колір"]');
+    colorSelects.forEach(select => {
+      select.addEventListener('change', function() {
+        const selectedColor = this.value.toLowerCase();
+        filterImagesByColor(selectedColor);
+      });
+    });
+
+    // === ФУНКЦІЇ ПІДТРИМКИ ВАРІАНТІВ ПРОДУКТУ ===
+
+    // Функція оновлення інформації про варіант
+    function updateVariantInfo(variant) {
+      const currentPriceElement = document.getElementById('currentPrice');
+      const comparePriceElement = document.getElementById('comparePrice');
+      const stockStatusElement = document.getElementById('stockStatus');
+      const addToCartBtn = document.getElementById('addToCartBtn');
+
+      if (currentPriceElement && variant) {
+        // Форматуємо ціну у стандартному форматі Shopify з валютою
+        const formattedPrice = formatShopifyPrice(variant.price);
+        currentPriceElement.textContent = formattedPrice;
+      }
+
+      if (comparePriceElement && variant && variant.compare_at_price > variant.price) {
+        const formattedComparePrice = formatShopifyPrice(variant.compare_at_price);
+        comparePriceElement.textContent = formattedComparePrice;
+        comparePriceElement.style.display = 'inline';
+      } else if (comparePriceElement) {
+        comparePriceElement.style.display = 'none';
+      }
+
+      if (stockStatusElement && variant) {
+        stockStatusElement.textContent = variant.available ? '✓ В наявності' : '✗ Немає в наявності';
+        stockStatusElement.className = variant.available ? 'in-stock' : 'out-of-stock';
+      }
+
+      if (addToCartBtn && variant) {
+        addToCartBtn.disabled = !variant.available;
+        addToCartBtn.textContent = variant.available ? 'Додати в кошик' : 'Немає в наявності';
+      }
+    }
+
+    // === ФУНКЦІЯ ФОРМАТУВАННЯ ЦІНИ У СТАНДАРТНОМУ ФОРМАТІ SHOPIFY ===
+    function formatShopifyPrice(priceInCents) {
+      const price = priceInCents / 100;
+      return '₴' + price.toFixed(2) + ' UAH';
+    }
+
+    // Обробники селекторів варіантів
+    const variantSelects = document.querySelectorAll('.variant-select');
+    const variantIdSelector = document.querySelector('.variant-id-selector');
+
+    function updateVariant() {
+      if (!variantIdSelector) return;
+
+      // Збираємо вибрані опції
+      const selectedOptions = {};
+      variantSelects.forEach(select => {
+        const optionIndex = select.getAttribute('data-option-index');
+        if (optionIndex !== null) {
+          selectedOptions[optionIndex] = select.value;
+        }
+      });
+
+      // Знаходимо підходящий варіант
+      const options = variantIdSelector.querySelectorAll('option');
+      let matchingVariant = null;
+
+      options.forEach(option => {
+        let isMatch = true;
+        Object.keys(selectedOptions).forEach(index => {
+          const dataAttr = `data-option${parseInt(index) + 1}`;
+          if (option.getAttribute(dataAttr) !== selectedOptions[index]) {
+            isMatch = false;
+          }
+        });
+
+        if (isMatch) {
+          matchingVariant = {
+            id: option.value,
+            available: option.getAttribute('data-available') === 'true',
+            price: parseInt(option.getAttribute('data-price')),
+            compare_at_price: parseInt(option.getAttribute('data-compare-price') || '0')
+          };
+          option.selected = true;
+        }
+      });
+
+      if (matchingVariant) {
+        updateVariantInfo(matchingVariant);
+      }
+    }
+
+    // Додаємо обробники для всіх селекторів варіантів
+    variantSelects.forEach(select => {
+      select.addEventListener('change', updateVariant);
+    });
+
+    // Ініціалізація галереї з першим доступним кольором
+    const initialColor = getInitialColor();
+    filterImagesByColor(initialColor);
+
+    // Встановлюємо активний селектор
+    if (colorHeartsContainer && initialColor !== 'all') {
+      const colorHearts = colorHeartsContainer.querySelectorAll('.color-heart');
+      colorHearts.forEach(heart => {
+        const colorValue = heart.getAttribute('data-color-value');
+        if (colorValue && colorValue.toLowerCase() === initialColor) {
+          heart.classList.add('active');
+        } else {
+          heart.classList.remove('active');
+        }
+      });
+    }
+
+    // Оновлення розмірів при зміні розміру вікна
+    window.addEventListener('resize', function() {
+      console.log('Розмір вікна змінено');
+    });
+
+    console.log('Галерея повністю ініціалізована та готова до роботи');
+  });
+
+  // === ФУНКЦІЯ ДЛЯ DROPDOWN ===
+  function toggleProductDropdown(element) {
+    element.classList.toggle('open');
+  }
+</script>
+
+
+{% schema %}
+{
+  "name": "Product",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Галерея налаштування"
+    },
+    {
+      "type": "header",
+      "content": "Desktop налаштування"
+    },
+    {
+      "type": "range",
+      "id": "desktop_slides_per_view",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 4,
+      "label": "Кількість слайдів на desktop"
+    },
+    {
+      "type": "range",
+      "id": "desktop_space_between",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "default": 20,
+      "label": "Відступ між слайдами на desktop (px)"
+    },
+    {
+      "type": "checkbox",
+      "id": "desktop_pagination",
+      "default": true,
+      "label": "Показувати пагінацію на desktop"
+    },
+    {
+      "type": "checkbox",
+      "id": "desktop_navigation",
+      "default": true,
+      "label": "Показувати стрілки навігації на desktop"
+    },
+    {
+      "type": "header",
+      "content": "Tablet налаштування"
+    },
+    {
+      "type": "range",
+      "id": "tablet_slides_per_view",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 3,
+      "label": "Кількість слайдів на tablet"
+    },
+    {
+      "type": "range",
+      "id": "tablet_space_between",
+      "min": 0,
+      "max": 40,
+      "step": 5,
+      "default": 15,
+      "label": "Відступ між слайдами на tablet (px)"
+    },
+    {
+      "type": "checkbox",
+      "id": "tablet_pagination",
+      "default": true,
+      "label": "Показувати пагінацію на tablet"
+    },
+    {
+      "type": "checkbox",
+      "id": "tablet_navigation",
+      "default": true,
+      "label": "Показувати стрілки навігації на tablet"
+    },
+    {
+      "type": "header",
+      "content": "Mobile налаштування"
+    },
+    {
+      "type": "range",
+      "id": "mobile_slides_per_view",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 1,
+      "label": "Кількість слайдів на mobile"
+    },
+    {
+      "type": "range",
+      "id": "mobile_space_between",
+      "min": 0,
+      "max": 30,
+      "step": 5,
+      "default": 10,
+      "label": "Відступ між слайдами на mobile (px)"
+    },
+    {
+      "type": "checkbox",
+      "id": "mobile_pagination",
+      "default": true,
+      "label": "Показувати пагінацію на mobile"
+    },
+    {
+      "type": "checkbox",
+      "id": "mobile_navigation",
+      "default": false,
+      "label": "Показувати стрілки навігації на mobile"
+    },
+    {
+      "type": "header",
+      "content": "Загальні налаштування"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_color_filtering",
+      "default": true,
+      "label": "Увімкнути фільтрацію за кольором"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_dynamic_dropdown",
+      "default": true,
+      "label": "Увімкнути динамічний dropdown"
+    }
+  ]
+}
+{% endschema %}
